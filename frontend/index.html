@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NODEFIRE — GPU Cloud</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #060608;
+      --surface: #0e0e12;
+      --border: #1e1e28;
+      --accent: #ff3d00;
+      --accent2: #ff8c00;
+      --text: #f0eee8;
+      --muted: #6b6b7a;
+      --mono: 'Space Mono', monospace;
+      --display: 'Bebas Neue', sans-serif;
+      --body: 'DM Sans', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--body);
+      overflow-x: hidden;
+    }
+
+    /* NOISE OVERLAY */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 999;
+      opacity: 0.4;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 48px;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.3s, background 0.3s;
+    }
+    nav.scrolled {
+      background: rgba(6,6,8,0.92);
+      border-color: var(--border);
+      backdrop-filter: blur(12px);
+    }
+    .logo {
+      font-family: var(--display);
+      font-size: 28px;
+      letter-spacing: 3px;
+      color: var(--text);
+    }
+    .logo span { color: var(--accent); }
+    nav a {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+      text-decoration: none;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    nav a:hover { color: var(--text); }
+    .nav-links { display: flex; gap: 36px; }
+    .nav-cta {
+      font-family: var(--mono);
+      font-size: 11px;
+      background: var(--accent);
+      color: #fff !important;
+      padding: 10px 20px;
+      letter-spacing: 2px;
+    }
+    .nav-cta:hover { background: var(--accent2); color: #fff; }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 140px 48px 80px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,61,0,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,61,0,0.04) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, black, transparent);
+    }
+
+    .hero-glow {
+      position: absolute;
+      width: 800px; height: 500px;
+      background: radial-gradient(ellipse, rgba(255,61,0,0.12) 0%, transparent 70%);
+      top: 10%; left: -10%;
+      pointer-events: none;
+    }
+    .hero-glow2 {
+      position: absolute;
+      width: 600px; height: 400px;
+      background: radial-gradient(ellipse, rgba(255,140,0,0.08) 0%, transparent 70%);
+      bottom: 0; right: -5%;
+      pointer-events: none;
+    }
+
+    .hero-tag {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--accent);
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.2s forwards;
+    }
+    .hero-tag::before {
+      content: '';
+      width: 40px; height: 1px;
+      background: var(--accent);
+    }
+
+    h1 {
+      font-family: var(--display);
+      font-size: clamp(72px, 12vw, 160px);
+      line-height: 0.9;
+      letter-spacing: 2px;
+      margin-bottom: 32px;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.4s forwards;
+    }
+    h1 .outline {
+      -webkit-text-stroke: 2px rgba(240,238,232,0.3);
+      color: transparent;
+    }
+    h1 .fire { color: var(--accent); }
+
+    .hero-sub {
+      max-width: 480px;
+      font-size: 16px;
+      line-height: 1.7;
+      color: var(--muted);
+      margin-bottom: 48px;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.6s forwards;
+    }
+
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.8s forwards;
+    }
+
+    .btn-primary {
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      padding: 16px 36px;
+      cursor: pointer;
+      transition: all 0.2s;
+      clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+    }
+    .btn-primary:hover { background: var(--accent2); transform: translateY(-2px); }
+
+    .btn-ghost {
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: 2px;
+      color: var(--muted);
+      background: none;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: color 0.2s;
+    }
+    .btn-ghost:hover { color: var(--text); }
+    .btn-ghost::after { content: '→'; transition: transform 0.2s; }
+    .btn-ghost:hover::after { transform: translateX(4px); }
+
+    .hero-stats {
+      position: absolute;
+      right: 48px;
+      bottom: 80px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      opacity: 0;
+      animation: fadeUp 0.8s 1s forwards;
+    }
+    .stat {
+      text-align: right;
+    }
+    .stat-num {
+      font-family: var(--display);
+      font-size: 40px;
+      color: var(--text);
+      letter-spacing: 1px;
+    }
+    .stat-num span { color: var(--accent); }
+    .stat-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    /* TICKER */
+    .ticker {
+      background: var(--accent);
+      padding: 12px 0;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+    .ticker-inner {
+      display: inline-flex;
+      animation: ticker 20s linear infinite;
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #fff;
+      gap: 0;
+    }
+    .ticker-item { padding: 0 32px; }
+    .ticker-item::after { content: '◆'; margin-left: 32px; }
+
+    /* SPECS */
+    .section {
+      padding: 120px 48px;
+    }
+
+    .section-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--accent);
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-family: var(--display);
+      font-size: clamp(48px, 6vw, 80px);
+      line-height: 1;
+      margin-bottom: 64px;
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 40px 36px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.3s;
+    }
+    .card:hover { border-color: rgba(255,61,0,0.4); }
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), transparent);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.4s;
+    }
+    .card:hover::before { transform: scaleX(1); }
+
+    .card-badge {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 3px;
+      color: var(--accent);
+      background: rgba(255,61,0,0.1);
+      border: 1px solid rgba(255,61,0,0.2);
+      padding: 4px 10px;
+      display: inline-block;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+    }
+
+    .card-gpu {
+      font-family: var(--display);
+      font-size: 36px;
+      margin-bottom: 8px;
+    }
+
+    .card-vram {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 24px;
+      letter-spacing: 1px;
+    }
+
+    .card-specs {
+      list-style: none;
+      margin-bottom: 32px;
+    }
+    .card-specs li {
+      font-size: 13px;
+      color: var(--muted);
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+    }
+    .card-specs li span { color: var(--text); font-family: var(--mono); font-size: 12px; }
+
+    .card-price {
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+    }
+    .price-num {
+      font-family: var(--display);
+      font-size: 48px;
+      color: var(--accent);
+    }
+    .price-unit {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    /* FEATURES */
+    .features-section { background: var(--surface); }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+    }
+
+    .feature {
+      padding: 48px;
+      border: 1px solid var(--border);
+      transition: background 0.3s;
+    }
+    .feature:hover { background: rgba(255,61,0,0.03); }
+
+    .feature-icon {
+      font-size: 28px;
+      margin-bottom: 20px;
+    }
+
+    .feature-title {
+      font-family: var(--display);
+      font-size: 28px;
+      margin-bottom: 12px;
+    }
+
+    .feature-text {
+      font-size: 14px;
+      line-height: 1.8;
+      color: var(--muted);
+    }
+
+    /* FORM */
+    .form-section {
+      background: var(--bg);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      align-items: stretch;
+    }
+
+    .form-left {
+      padding: 120px 64px;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+    }
+
+    .form-right {
+      padding: 120px 64px;
+    }
+
+    .form-title {
+      font-family: var(--display);
+      font-size: clamp(48px, 5vw, 72px);
+      line-height: 1;
+      margin-bottom: 24px;
+    }
+
+    .form-desc {
+      font-size: 15px;
+      line-height: 1.7;
+      color: var(--muted);
+      margin-bottom: 48px;
+    }
+
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .contact-icon {
+      width: 40px; height: 40px;
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+    .contact-text {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: 1px;
+    }
+
+    .field {
+      margin-bottom: 20px;
+    }
+    .field label {
+      display: block;
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .field input,
+    .field select,
+    .field textarea {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 13px;
+      padding: 14px 18px;
+      outline: none;
+      transition: border-color 0.2s;
+      appearance: none;
+    }
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus {
+      border-color: var(--accent);
+    }
+    .field textarea {
+      resize: vertical;
+      min-height: 100px;
+      font-family: var(--body);
+      font-size: 14px;
+    }
+    .field select option { background: var(--surface); }
+
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+    .submit-btn {
+      width: 100%;
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      padding: 18px;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-top: 8px;
+      clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+    }
+    .submit-btn:hover { background: var(--accent2); }
+    .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .form-notice {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--muted);
+      margin-top: 16px;
+      letter-spacing: 1px;
+    }
+
+    .success-msg {
+      display: none;
+      background: rgba(255,61,0,0.1);
+      border: 1px solid rgba(255,61,0,0.3);
+      padding: 20px;
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--accent);
+      margin-top: 16px;
+      letter-spacing: 1px;
+    }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 40px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .footer-logo {
+      font-family: var(--display);
+      font-size: 22px;
+      letter-spacing: 3px;
+    }
+    .footer-logo span { color: var(--accent); }
+    .footer-copy {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 2px;
+    }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes ticker {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    /* SCROLL REVEAL */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.7s, transform 0.7s;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: none;
+    }
+
+    @media (max-width: 768px) {
+      nav { padding: 16px 24px; }
+      .nav-links { display: none; }
+      .hero { padding: 100px 24px 60px; }
+      .hero-stats { display: none; }
+      .section { padding: 80px 24px; }
+      .features-grid { grid-template-columns: 1fr; }
+      .form-section { grid-template-columns: 1fr; }
+      .form-left, .form-right { padding: 60px 24px; }
+      .form-row { grid-template-columns: 1fr; }
+      footer { flex-direction: column; gap: 16px; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="logo">NODE<span>FIRE</span></div>
+  <div class="nav-links">
+    <a href="#gpus">Серверы</a>
+    <a href="#features">Возможности</a>
+    <a href="#contact">Контакты</a>
+  </div>
+  <a href="#contact" class="nav-cta">Получить доступ</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-glow2"></div>
+
+  <div class="hero-tag">GPU Cloud Platform</div>
+
+  <h1>
+    ВЫЧИСЛИ<br>
+    <span class="outline">БУДУЩЕЕ</span><br>
+    <span class="fire">СЕЙЧАС</span>
+  </h1>
+
+  <p class="hero-sub">
+    Мощные GPU серверы для обучения нейросетей, рендеринга и высоконагруженных вычислений.
+    Посекундная тарификация. Запуск за 60 секунд.
+  </p>
+
+  <div class="hero-actions">
+    <button class="btn-primary" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">
+      Оставить заявку
+    </button>
+    <button class="btn-ghost" onclick="document.getElementById('gpus').scrollIntoView({behavior:'smooth'})">
+      Смотреть тарифы
+    </button>
+  </div>
+
+  <div class="hero-stats">
+    <div class="stat">
+      <div class="stat-num">99<span>.9%</span></div>
+      <div class="stat-label">Uptime SLA</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num"><span>×</span>40</div>
+      <div class="stat-label">Быстрее CPU</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">24<span>/7</span></div>
+      <div class="stat-label">Поддержка</div>
+    </div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-inner">
+    <span class="ticker-item">RTX 4090</span>
+    <span class="ticker-item">Tesla A100</span>
+    <span class="ticker-item">Посекундная тарификация</span>
+    <span class="ticker-item">NVLink</span>
+    <span class="ticker-item">40Gbps сеть</span>
+    <span class="ticker-item">NVMe SSD</span>
+    <span class="ticker-item">RTX 3090</span>
+    <span class="ticker-item">Ubuntu 22.04</span>
+    <span class="ticker-item">Docker ready</span>
+    <span class="ticker-item">RTX 4090</span>
+    <span class="ticker-item">Tesla A100</span>
+    <span class="ticker-item">Посекундная тарификация</span>
+    <span class="ticker-item">NVLink</span>
+    <span class="ticker-item">40Gbps сеть</span>
+    <span class="ticker-item">NVMe SSD</span>
+    <span class="ticker-item">RTX 3090</span>
+    <span class="ticker-item">Ubuntu 22.04</span>
+    <span class="ticker-item">Docker ready</span>
+  </div>
+</div>
+
+<!-- GPU CARDS -->
+<section class="section" id="gpus">
+  <div class="section-label">Конфигурации</div>
+  <div class="section-title reveal">Выбери<br>свою мощь</div>
+  <div class="cards-grid">
+    <div class="card reveal">
+      <div class="card-badge">Старт</div>
+      <div class="card-gpu">RTX 3090</div>
+      <div class="card-vram">24 GB VRAM — GDDR6X</div>
+      <ul class="card-specs">
+        <li>CPU <span>16 vCPU</span></li>
+        <li>RAM <span>64 GB</span></li>
+        <li>Диск <span>500 GB NVMe</span></li>
+        <li>Сеть <span>1 Gbps</span></li>
+      </ul>
+      <div class="card-price">
+        <div class="price-num">₽9</div>
+        <div class="price-unit">/ минута</div>
+      </div>
+    </div>
+
+    <div class="card reveal">
+      <div class="card-badge">Популярный</div>
+      <div class="card-gpu">RTX 4090</div>
+      <div class="card-vram">24 GB VRAM — GDDR6X</div>
+      <ul class="card-specs">
+        <li>CPU <span>32 vCPU</span></li>
+        <li>RAM <span>128 GB</span></li>
+        <li>Диск <span>1 TB NVMe</span></li>
+        <li>Сеть <span>10 Gbps</span></li>
+      </ul>
+      <div class="card-price">
+        <div class="price-num">₽18</div>
+        <div class="price-unit">/ минута</div>
+      </div>
+    </div>
+
+    <div class="card reveal">
+      <div class="card-badge">Pro</div>
+      <div class="card-gpu">A100</div>
+      <div class="card-vram">40 GB HBM2 — Tesla</div>
+      <ul class="card-specs">
+        <li>CPU <span>64 vCPU</span></li>
+        <li>RAM <span>256 GB</span></li>
+        <li>Диск <span>2 TB NVMe</span></li>
+        <li>Сеть <span>40 Gbps</span></li>
+      </ul>
+      <div class="card-price">
+        <div class="price-num">₽45</div>
+        <div class="price-unit">/ минута</div>
+      </div>
+    </div>
+
+    <div class="card reveal" style="background: linear-gradient(135deg, #0e0e12, #140a00);">
+      <div class="card-badge" style="background:rgba(255,140,0,0.15); border-color:rgba(255,140,0,0.3); color:var(--accent2);">Кластер</div>
+      <div class="card-gpu">A100 ×8</div>
+      <div class="card-vram">320 GB HBM2 — NVLink</div>
+      <ul class="card-specs">
+        <li>CPU <span>256 vCPU</span></li>
+        <li>RAM <span>2 TB</span></li>
+        <li>Диск <span>20 TB NVMe</span></li>
+        <li>Сеть <span>400 Gbps</span></li>
+      </ul>
+      <div class="card-price">
+        <div class="price-num" style="color:var(--accent2)">₽340</div>
+        <div class="price-unit">/ минута</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="section features-section" id="features">
+  <div class="section-label">Почему мы</div>
+  <div class="section-title reveal">Никаких<br>компромиссов</div>
+  <div class="features-grid">
+    <div class="feature reveal">
+      <div class="feature-icon">⚡</div>
+      <div class="feature-title">Запуск за 60 сек</div>
+      <p class="feature-text">Сервер поднимается мгновенно. Нет очередей, нет ожидания. SSH-ключи, Docker-образ или кастомный snapshot — готов сразу.</p>
+    </div>
+    <div class="feature reveal">
+      <div class="feature-icon">💾</div>
+      <div class="feature-title">Сохранение диска</div>
+      <p class="feature-text">Состояние диска сохраняется после остановки. Возобновляй работу с той же точки — твои данные и модели никуда не денутся.</p>
+    </div>
+    <div class="feature reveal">
+      <div class="feature-icon">🔥</div>
+      <div class="feature-title">Bare-metal скорость</div>
+      <p class="feature-text">Никакой виртуализации GPU. Прямой доступ к железу даёт максимальную производительность без оверхеда гипервизора.</p>
+    </div>
+    <div class="feature reveal">
+      <div class="feature-icon">🌐</div>
+      <div class="feature-title">40 Gbps сеть</div>
+      <p class="feature-text">Внутренняя сеть между узлами кластера 40 Гбит/с. Распределённое обучение без узких мест по сети.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT FORM -->
+<section class="form-section" id="contact">
+  <div class="form-left reveal">
+    <div class="section-label">Контакт</div>
+    <div class="form-title">Оставь<br>заявку</div>
+    <p class="form-desc">
+      Расскажи о своей задаче — мы подберём оптимальную конфигурацию и свяжемся с тобой в течение часа.
+    </p>
+    <div class="contact-item">
+      <div class="contact-icon">✉</div>
+      <div class="contact-text">hello@nodefire.io</div>
+    </div>
+    <div class="contact-item">
+      <div class="contact-icon">💬</div>
+      <div class="contact-text">@nodefire_support</div>
+    </div>
+    <div class="contact-item">
+      <div class="contact-icon">📍</div>
+      <div class="contact-text">Москва, ЦОД уровня Tier III</div>
+    </div>
+  </div>
+
+  <div class="form-right reveal">
+    <form id="leadForm">
+      <div class="form-row">
+        <div class="field">
+          <label>Имя</label>
+          <input type="text" id="name" placeholder="Алексей" required />
+        </div>
+        <div class="field">
+          <label>Телефон</label>
+          <input type="tel" id="phone" placeholder="+7 999 000 00 00" required />
+        </div>
+      </div>
+      <div class="field">
+        <label>Email</label>
+        <input type="email" id="email" placeholder="you@company.com" required />
+      </div>
+      <div class="field">
+        <label>Интересующий GPU</label>
+        <select id="gpu">
+          <option value="RTX 3090">RTX 3090 — старт</option>
+          <option value="RTX 4090">RTX 4090 — популярный</option>
+          <option value="A100">Tesla A100 — Pro</option>
+          <option value="A100 x8">A100 ×8 кластер</option>
+          <option value="Не знаю">Помогите выбрать</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Задача</label>
+        <textarea id="message" placeholder="Обучение модели / рендеринг / inference / другое..."></textarea>
+      </div>
+      <button type="submit" class="submit-btn" id="submitBtn">
+        Отправить заявку →
+      </button>
+      <div class="success-msg" id="successMsg">
+        ✓ Заявка отправлена! Мы свяжемся с вами в течение часа.
+      </div>
+      <p class="form-notice">Нажимая кнопку, вы соглашаетесь на обработку персональных данных.</p>
+    </form>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">NODE<span>FIRE</span></div>
+  <div class="footer-copy">© 2025 NODEFIRE GPU CLOUD — ALL RIGHTS RESERVED</div>
+</footer>
+
+<script>
+  // Nav scroll
+  window.addEventListener('scroll', () => {
+    document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 60);
+  });
+
+  // Scroll reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 100);
+      }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // Form submit
+  document.getElementById('leadForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.textContent = 'Отправка...';
+
+    const data = {
+      name: document.getElementById('name').value,
+      phone: document.getElementById('phone').value,
+      email: document.getElementById('email').value,
+      gpu: document.getElementById('gpu').value,
+      message: document.getElementById('message').value
+    };
+
+    try {
+      const res = await fetch('/api/lead', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      if (res.ok) {
+        document.getElementById('successMsg').style.display = 'block';
+        btn.style.display = 'none';
+        e.target.reset();
+      } else {
+        btn.textContent = 'Ошибка — попробуй снова';
+        btn.disabled = false;
+      }
+    } catch {
+      btn.textContent = 'Ошибка — попробуй снова';
+      btn.disabled = false;
+    }
+  });
+</script>
+
+</body>
+</html>
