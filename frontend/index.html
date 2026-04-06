@@ -87,6 +87,31 @@
     }
     .nav-cta:hover { background: var(--accent2); color: #fff; }
 
+    /* LANG SWITCHER */
+    .lang-switcher {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 2px;
+    }
+    .lang-btn {
+      background: none;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 2px;
+      padding: 4px 6px;
+      transition: color 0.2s;
+      text-transform: uppercase;
+    }
+    .lang-btn.active { color: var(--accent); }
+    .lang-btn:hover { color: var(--text); }
+    .lang-sep { color: var(--border); }
+
     /* HERO */
     .hero {
       min-height: 100vh;
@@ -156,6 +181,7 @@
       color: transparent;
     }
     h1 .fire { color: var(--accent); display: block; margin-top: 0.35em; }
+    html[lang="en"] h1 .fire { margin-top: 0; }
 
     .hero-sub {
       max-width: 480px;
@@ -684,21 +710,26 @@
 <nav id="nav">
   <div class="logo">NODE<span>FIRE</span></div>
   <div class="nav-links">
-    <a href="#gpus">Серверы</a>
-    <a href="#features">Возможности</a>
-    <a href="#contact">Контакты</a>
+    <a href="#gpus" data-i18n="nav_servers">Серверы</a>
+    <a href="#features" data-i18n="nav_features">Возможности</a>
+    <a href="#contact" data-i18n="nav_contacts">Контакты</a>
   </div>
-  <a href="#contact" class="nav-cta">Получить доступ</a>
+  <div class="lang-switcher">
+    <button class="lang-btn active" id="langRu" onclick="setLang('ru')">RU</button>
+    <span class="lang-sep">/</span>
+    <button class="lang-btn" id="langEn" onclick="setLang('en')">EN</button>
+  </div>
+  <a href="#contact" class="nav-cta" data-i18n="nav_cta">Получить доступ</a>
   <button class="burger" id="burger" aria-label="Меню">
     <span></span><span></span><span></span>
   </button>
 </nav>
 
 <div class="mobile-menu" id="mobileMenu">
-  <a href="#gpus" class="mobile-nav-link">Серверы</a>
-  <a href="#features" class="mobile-nav-link">Возможности</a>
-  <a href="#contact" class="mobile-nav-link">Контакты</a>
-  <a href="#contact" class="mobile-cta mobile-nav-link">Получить доступ</a>
+  <a href="#gpus" class="mobile-nav-link" data-i18n="nav_servers">Серверы</a>
+  <a href="#features" class="mobile-nav-link" data-i18n="nav_features">Возможности</a>
+  <a href="#contact" class="mobile-nav-link" data-i18n="nav_contacts">Контакты</a>
+  <a href="#contact" class="mobile-cta mobile-nav-link" data-i18n="nav_cta">Получить доступ</a>
 </div>
 
 <!-- HERO -->
@@ -707,24 +738,24 @@
   <div class="hero-glow"></div>
   <div class="hero-glow2"></div>
 
-  <div class="hero-tag">GPU Cloud Platform</div>
+  <div class="hero-tag" data-i18n="hero_tag">GPU Cloud Platform</div>
 
   <h1>
-    ВЫЧИСЛИ<br>
-    <span class="outline">БУДУЩЕЕ</span><br>
-    <span class="fire">СЕЙЧАС</span>
+    <span data-i18n="hero_line1">ВЫЧИСЛИ</span><br>
+    <span class="outline" data-i18n="hero_line2">БУДУЩЕЕ</span><br>
+    <span class="fire" data-i18n="hero_line3">СЕЙЧАС</span>
   </h1>
 
-  <p class="hero-sub">
+  <p class="hero-sub" data-i18n="hero_sub">
     Мощные GPU серверы для обучения нейросетей, рендеринга и высоконагруженных вычислений.
     Посекундная тарификация. Запуск за 60 секунд.
   </p>
 
   <div class="hero-actions">
-    <button class="btn-primary" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">
+    <button class="btn-primary" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})" data-i18n="hero_cta1">
       Оставить заявку
     </button>
-    <button class="btn-ghost" onclick="document.getElementById('gpus').scrollIntoView({behavior:'smooth'})">
+    <button class="btn-ghost" onclick="document.getElementById('gpus').scrollIntoView({behavior:'smooth'})" data-i18n="hero_cta2">
       Смотреть тарифы
     </button>
   </div>
@@ -732,30 +763,30 @@
   <div class="hero-stats-mobile">
     <div class="stat">
       <div class="stat-num">99<span>.9%</span></div>
-      <div class="stat-label">Uptime SLA</div>
+      <div class="stat-label" data-i18n="stat_uptime">Uptime SLA</div>
     </div>
     <div class="stat">
       <div class="stat-num"><span>×</span>40</div>
-      <div class="stat-label">Быстрее CPU</div>
+      <div class="stat-label" data-i18n="stat_faster">Быстрее CPU</div>
     </div>
     <div class="stat">
       <div class="stat-num">24<span>/7</span></div>
-      <div class="stat-label">Поддержка</div>
+      <div class="stat-label" data-i18n="stat_support">Поддержка</div>
     </div>
   </div>
 
   <div class="hero-stats">
     <div class="stat">
       <div class="stat-num">99<span>.9%</span></div>
-      <div class="stat-label">Uptime SLA</div>
+      <div class="stat-label" data-i18n="stat_uptime">Uptime SLA</div>
     </div>
     <div class="stat">
       <div class="stat-num"><span>×</span>40</div>
-      <div class="stat-label">Быстрее CPU</div>
+      <div class="stat-label" data-i18n="stat_faster">Быстрее CPU</div>
     </div>
     <div class="stat">
       <div class="stat-num">24<span>/7</span></div>
-      <div class="stat-label">Поддержка</div>
+      <div class="stat-label" data-i18n="stat_support">Поддержка</div>
     </div>
   </div>
 </section>
@@ -765,18 +796,18 @@
   <div class="ticker-inner">
     <span class="ticker-item">RTX 4090</span>
     <span class="ticker-item">Tesla A100</span>
-    <span class="ticker-item">Посекундная тарификация</span>
+    <span class="ticker-item" data-i18n="ticker_billing">Посекундная тарификация</span>
     <span class="ticker-item">NVLink</span>
-    <span class="ticker-item">40Gbps сеть</span>
+    <span class="ticker-item" data-i18n="ticker_net">40Gbps сеть</span>
     <span class="ticker-item">NVMe SSD</span>
     <span class="ticker-item">RTX 3090</span>
     <span class="ticker-item">Ubuntu 22.04</span>
     <span class="ticker-item">Docker ready</span>
     <span class="ticker-item">RTX 4090</span>
     <span class="ticker-item">Tesla A100</span>
-    <span class="ticker-item">Посекундная тарификация</span>
+    <span class="ticker-item" data-i18n="ticker_billing">Посекундная тарификация</span>
     <span class="ticker-item">NVLink</span>
-    <span class="ticker-item">40Gbps сеть</span>
+    <span class="ticker-item" data-i18n="ticker_net">40Gbps сеть</span>
     <span class="ticker-item">NVMe SSD</span>
     <span class="ticker-item">RTX 3090</span>
     <span class="ticker-item">Ubuntu 22.04</span>
@@ -786,38 +817,38 @@
 
 <!-- GPU CARDS -->
 <section class="section" id="gpus">
-  <div class="section-label">Конфигурации</div>
-  <div class="section-title reveal">Выбери<br>свою мощь</div>
+  <div class="section-label" data-i18n="gpus_label">Конфигурации</div>
+  <div class="section-title reveal" data-i18n="gpus_title">Выбери<br>свою мощь</div>
   <div class="cards-grid">
     <div class="card reveal">
-      <div class="card-badge">Старт</div>
+      <div class="card-badge" data-i18n="badge_start">Старт</div>
       <div class="card-gpu">RTX 3090</div>
       <div class="card-vram">24 GB VRAM — GDDR6X</div>
       <ul class="card-specs">
         <li>CPU <span>16 vCPU</span></li>
         <li>RAM <span>64 GB</span></li>
-        <li>Диск <span>500 GB NVMe</span></li>
-        <li>Сеть <span>1 Gbps</span></li>
+        <li><span data-i18n="spec_disk">Диск</span> <span>500 GB NVMe</span></li>
+        <li><span data-i18n="spec_net">Сеть</span> <span>1 Gbps</span></li>
       </ul>
       <div class="card-price">
         <div class="price-num">₽9</div>
-        <div class="price-unit">/ минута</div>
+        <div class="price-unit" data-i18n="per_min">/ минута</div>
       </div>
     </div>
 
     <div class="card reveal">
-      <div class="card-badge">Популярный</div>
+      <div class="card-badge" data-i18n="badge_popular">Популярный</div>
       <div class="card-gpu">RTX 4090</div>
       <div class="card-vram">24 GB VRAM — GDDR6X</div>
       <ul class="card-specs">
         <li>CPU <span>32 vCPU</span></li>
         <li>RAM <span>128 GB</span></li>
-        <li>Диск <span>1 TB NVMe</span></li>
-        <li>Сеть <span>10 Gbps</span></li>
+        <li><span data-i18n="spec_disk">Диск</span> <span>1 TB NVMe</span></li>
+        <li><span data-i18n="spec_net">Сеть</span> <span>10 Gbps</span></li>
       </ul>
       <div class="card-price">
         <div class="price-num">₽18</div>
-        <div class="price-unit">/ минута</div>
+        <div class="price-unit" data-i18n="per_min">/ минута</div>
       </div>
     </div>
 
@@ -828,28 +859,28 @@
       <ul class="card-specs">
         <li>CPU <span>64 vCPU</span></li>
         <li>RAM <span>256 GB</span></li>
-        <li>Диск <span>2 TB NVMe</span></li>
-        <li>Сеть <span>40 Gbps</span></li>
+        <li><span data-i18n="spec_disk">Диск</span> <span>2 TB NVMe</span></li>
+        <li><span data-i18n="spec_net">Сеть</span> <span>40 Gbps</span></li>
       </ul>
       <div class="card-price">
         <div class="price-num">₽45</div>
-        <div class="price-unit">/ минута</div>
+        <div class="price-unit" data-i18n="per_min">/ минута</div>
       </div>
     </div>
 
     <div class="card reveal" style="background: linear-gradient(135deg, #0e0e12, #140a00);">
-      <div class="card-badge" style="background:rgba(255,140,0,0.15); border-color:rgba(255,140,0,0.3); color:var(--accent2);">Кластер</div>
+      <div class="card-badge" style="background:rgba(255,140,0,0.15); border-color:rgba(255,140,0,0.3); color:var(--accent2);" data-i18n="badge_cluster">Кластер</div>
       <div class="card-gpu">A100 ×8</div>
       <div class="card-vram">320 GB HBM2 — NVLink</div>
       <ul class="card-specs">
         <li>CPU <span>256 vCPU</span></li>
         <li>RAM <span>2 TB</span></li>
-        <li>Диск <span>20 TB NVMe</span></li>
-        <li>Сеть <span>400 Gbps</span></li>
+        <li><span data-i18n="spec_disk">Диск</span> <span>20 TB NVMe</span></li>
+        <li><span data-i18n="spec_net">Сеть</span> <span>400 Gbps</span></li>
       </ul>
       <div class="card-price">
         <div class="price-num" style="color:var(--accent2)">₽340</div>
-        <div class="price-unit">/ минута</div>
+        <div class="price-unit" data-i18n="per_min">/ минута</div>
       </div>
     </div>
   </div>
@@ -857,28 +888,28 @@
 
 <!-- FEATURES -->
 <section class="section features-section" id="features">
-  <div class="section-label">Почему мы</div>
-  <div class="section-title reveal">Никаких<br>компромиссов</div>
+  <div class="section-label" data-i18n="feat_label">Почему мы</div>
+  <div class="section-title reveal" data-i18n="feat_title">Никаких<br>компромиссов</div>
   <div class="features-grid">
     <div class="feature reveal">
       <div class="feature-icon">⚡</div>
-      <div class="feature-title">Запуск за 60 сек</div>
-      <p class="feature-text">Сервер поднимается мгновенно. Нет очередей, нет ожидания. SSH-ключи, Docker-образ или кастомный snapshot — готов сразу.</p>
+      <div class="feature-title" data-i18n="feat1_title">Запуск за 60 сек</div>
+      <p class="feature-text" data-i18n="feat1_text">Сервер поднимается мгновенно. Нет очередей, нет ожидания. SSH-ключи, Docker-образ или кастомный snapshot — готов сразу.</p>
     </div>
     <div class="feature reveal">
       <div class="feature-icon">💾</div>
-      <div class="feature-title">Сохранение диска</div>
-      <p class="feature-text">Состояние диска сохраняется после остановки. Возобновляй работу с той же точки — твои данные и модели никуда не денутся.</p>
+      <div class="feature-title" data-i18n="feat2_title">Сохранение диска</div>
+      <p class="feature-text" data-i18n="feat2_text">Состояние диска сохраняется после остановки. Возобновляй работу с той же точки — твои данные и модели никуда не денутся.</p>
     </div>
     <div class="feature reveal">
       <div class="feature-icon">🔥</div>
-      <div class="feature-title">Bare-metal скорость</div>
-      <p class="feature-text">Никакой виртуализации GPU. Прямой доступ к железу даёт максимальную производительность без оверхеда гипервизора.</p>
+      <div class="feature-title" data-i18n="feat3_title">Bare-metal скорость</div>
+      <p class="feature-text" data-i18n="feat3_text">Никакой виртуализации GPU. Прямой доступ к железу даёт максимальную производительность без оверхеда гипервизора.</p>
     </div>
     <div class="feature reveal">
       <div class="feature-icon">🌐</div>
-      <div class="feature-title">40 Gbps сеть</div>
-      <p class="feature-text">Внутренняя сеть между узлами кластера 40 Гбит/с. Распределённое обучение без узких мест по сети.</p>
+      <div class="feature-title" data-i18n="feat4_title">40 Gbps сеть</div>
+      <p class="feature-text" data-i18n="feat4_text">Внутренняя сеть между узлами кластера 40 Гбит/с. Распределённое обучение без узких мест по сети.</p>
     </div>
   </div>
 </section>
@@ -886,9 +917,9 @@
 <!-- CONTACT FORM -->
 <section class="form-section" id="contact">
   <div class="form-left reveal">
-    <div class="section-label">Контакт</div>
-    <div class="form-title">Оставь<br>заявку</div>
-    <p class="form-desc">
+    <div class="section-label" data-i18n="form_label">Контакт</div>
+    <div class="form-title" data-i18n="form_title">Оставь<br>заявку</div>
+    <p class="form-desc" data-i18n="form_desc">
       Расскажи о своей задаче — мы подберём оптимальную конфигурацию и свяжемся с тобой в течение часа.
     </p>
     <div class="contact-item">
@@ -901,7 +932,7 @@
     </div>
     <div class="contact-item">
       <div class="contact-icon">📍</div>
-      <div class="contact-text">Москва, ЦОД уровня Tier III</div>
+      <div class="contact-text" data-i18n="form_location">Москва, ЦОД уровня Tier III</div>
     </div>
   </div>
 
@@ -909,11 +940,11 @@
     <form id="leadForm">
       <div class="form-row">
         <div class="field">
-          <label>Имя</label>
-          <input type="text" id="name" placeholder="Алексей" required />
+          <label data-i18n="field_name">Имя</label>
+          <input type="text" id="name" data-i18n-placeholder="placeholder_name" placeholder="Алексей" required />
         </div>
         <div class="field">
-          <label>Телефон</label>
+          <label data-i18n="field_phone">Телефон</label>
           <input type="tel" id="phone" placeholder="+7 999 000 00 00" required />
         </div>
       </div>
@@ -922,26 +953,26 @@
         <input type="email" id="email" placeholder="you@company.com" required />
       </div>
       <div class="field">
-        <label>Интересующий GPU</label>
+        <label data-i18n="field_gpu">Интересующий GPU</label>
         <select id="gpu">
-          <option value="RTX 3090">RTX 3090 — старт</option>
-          <option value="RTX 4090">RTX 4090 — популярный</option>
-          <option value="A100">Tesla A100 — Pro</option>
-          <option value="A100 x8">A100 ×8 кластер</option>
-          <option value="Не знаю">Помогите выбрать</option>
+          <option value="RTX 3090" data-i18n="opt_3090">RTX 3090 — старт</option>
+          <option value="RTX 4090" data-i18n="opt_4090">RTX 4090 — популярный</option>
+          <option value="A100" data-i18n="opt_a100">Tesla A100 — Pro</option>
+          <option value="A100 x8" data-i18n="opt_cluster">A100 ×8 кластер</option>
+          <option value="Не знаю" data-i18n="opt_help">Помогите выбрать</option>
         </select>
       </div>
       <div class="field">
-        <label>Задача</label>
-        <textarea id="message" placeholder="Обучение модели / рендеринг / inference / другое..."></textarea>
+        <label data-i18n="field_task">Задача</label>
+        <textarea id="message" data-i18n-placeholder="placeholder_task" placeholder="Обучение модели / рендеринг / inference / другое..."></textarea>
       </div>
-      <button type="submit" class="submit-btn" id="submitBtn">
+      <button type="submit" class="submit-btn" id="submitBtn" data-i18n="btn_submit">
         Отправить заявку →
       </button>
-      <div class="success-msg" id="successMsg">
+      <div class="success-msg" id="successMsg" data-i18n="success_msg">
         ✓ Заявка отправлена! Мы свяжемся с вами в течение часа.
       </div>
-      <p class="form-notice">Нажимая кнопку, вы соглашаетесь на обработку персональных данных.</p>
+      <p class="form-notice" data-i18n="form_notice">Нажимая кнопку, вы соглашаетесь на обработку персональных данных.</p>
     </form>
   </div>
 </section>
@@ -953,6 +984,144 @@
 </footer>
 
 <script>
+  // i18n
+  const translations = {
+    ru: {
+      nav_servers: 'Серверы',
+      nav_features: 'Возможности',
+      nav_contacts: 'Контакты',
+      nav_cta: 'Получить доступ',
+      hero_tag: 'GPU Cloud Platform',
+      hero_line1: 'ВЫЧИСЛИ',
+      hero_line2: 'БУДУЩЕЕ',
+      hero_line3: 'СЕЙЧАС',
+      hero_sub: 'Мощные GPU серверы для обучения нейросетей, рендеринга и высоконагруженных вычислений. Посекундная тарификация. Запуск за 60 секунд.',
+      hero_cta1: 'Оставить заявку',
+      hero_cta2: 'Смотреть тарифы',
+      stat_uptime: 'Uptime SLA',
+      stat_faster: 'Быстрее CPU',
+      stat_support: 'Поддержка',
+      ticker_billing: 'Посекундная тарификация',
+      ticker_net: '40Gbps сеть',
+      gpus_label: 'Конфигурации',
+      gpus_title: 'Выбери<br>свою мощь',
+      badge_start: 'Старт',
+      badge_popular: 'Популярный',
+      badge_cluster: 'Кластер',
+      spec_disk: 'Диск',
+      spec_net: 'Сеть',
+      per_min: '/ минута',
+      feat_label: 'Почему мы',
+      feat_title: 'Никаких<br>компромиссов',
+      feat1_title: 'Запуск за 60 сек',
+      feat1_text: 'Сервер поднимается мгновенно. Нет очередей, нет ожидания. SSH-ключи, Docker-образ или кастомный snapshot — готов сразу.',
+      feat2_title: 'Сохранение диска',
+      feat2_text: 'Состояние диска сохраняется после остановки. Возобновляй работу с той же точки — твои данные и модели никуда не денутся.',
+      feat3_title: 'Bare-metal скорость',
+      feat3_text: 'Никакой виртуализации GPU. Прямой доступ к железу даёт максимальную производительность без оверхеда гипервизора.',
+      feat4_title: '40 Gbps сеть',
+      feat4_text: 'Внутренняя сеть между узлами кластера 40 Гбит/с. Распределённое обучение без узких мест по сети.',
+      form_label: 'Контакт',
+      form_title: 'Оставь<br>заявку',
+      form_desc: 'Расскажи о своей задаче — мы подберём оптимальную конфигурацию и свяжемся с тобой в течение часа.',
+      form_location: 'Москва, ЦОД уровня Tier III',
+      field_name: 'Имя',
+      field_phone: 'Телефон',
+      field_gpu: 'Интересующий GPU',
+      field_task: 'Задача',
+      placeholder_name: 'Алексей',
+      placeholder_task: 'Обучение модели / рендеринг / inference / другое...',
+      opt_3090: 'RTX 3090 — старт',
+      opt_4090: 'RTX 4090 — популярный',
+      opt_a100: 'Tesla A100 — Pro',
+      opt_cluster: 'A100 ×8 кластер',
+      opt_help: 'Помогите выбрать',
+      btn_submit: 'Отправить заявку →',
+      btn_sending: 'Отправка...',
+      btn_error: 'Ошибка — попробуй снова',
+      success_msg: '✓ Заявка отправлена! Мы свяжемся с вами в течение часа.',
+      form_notice: 'Нажимая кнопку, вы соглашаетесь на обработку персональных данных.',
+    },
+    en: {
+      nav_servers: 'Servers',
+      nav_features: 'Features',
+      nav_contacts: 'Contact',
+      nav_cta: 'Get Access',
+      hero_tag: 'GPU Cloud Platform',
+      hero_line1: 'COMPUTE',
+      hero_line2: 'THE FUTURE',
+      hero_line3: 'NOW',
+      hero_sub: 'Powerful GPU servers for AI training, rendering, and high-load computing. Per-second billing. Deploy in 60 seconds.',
+      hero_cta1: 'Request Access',
+      hero_cta2: 'View Pricing',
+      stat_uptime: 'Uptime SLA',
+      stat_faster: 'Faster than CPU',
+      stat_support: 'Support',
+      ticker_billing: 'Per-second billing',
+      ticker_net: '40Gbps Network',
+      gpus_label: 'Configurations',
+      gpus_title: 'Choose<br>your power',
+      badge_start: 'Starter',
+      badge_popular: 'Popular',
+      badge_cluster: 'Cluster',
+      spec_disk: 'Disk',
+      spec_net: 'Network',
+      per_min: '/ minute',
+      feat_label: 'Why us',
+      feat_title: 'Zero<br>compromises',
+      feat1_title: 'Deploy in 60 sec',
+      feat1_text: 'Server is ready instantly. No queues, no waiting. SSH keys, Docker image or custom snapshot — up and running immediately.',
+      feat2_title: 'Persistent storage',
+      feat2_text: 'Disk state is preserved after shutdown. Resume from where you left off — your data and models stay intact.',
+      feat3_title: 'Bare-metal speed',
+      feat3_text: 'No GPU virtualization. Direct hardware access delivers maximum performance without hypervisor overhead.',
+      feat4_title: '40 Gbps network',
+      feat4_text: 'Internal cluster network at 40 Gbit/s. Distributed training without network bottlenecks.',
+      form_label: 'Contact',
+      form_title: 'Get in<br>touch',
+      form_desc: 'Tell us about your task — we\'ll find the optimal configuration and reach out within an hour.',
+      form_location: 'Moscow, Tier III Data Center',
+      field_name: 'Name',
+      field_phone: 'Phone',
+      field_gpu: 'GPU of interest',
+      field_task: 'Task',
+      placeholder_name: 'Alex',
+      placeholder_task: 'Model training / rendering / inference / other...',
+      opt_3090: 'RTX 3090 — starter',
+      opt_4090: 'RTX 4090 — popular',
+      opt_a100: 'Tesla A100 — Pro',
+      opt_cluster: 'A100 ×8 cluster',
+      opt_help: 'Help me choose',
+      btn_submit: 'Submit Request →',
+      btn_sending: 'Sending...',
+      btn_error: 'Error — try again',
+      success_msg: '✓ Request sent! We\'ll get back to you within an hour.',
+      form_notice: 'By clicking the button, you agree to the processing of personal data.',
+    }
+  };
+
+  let currentLang = 'ru';
+
+  function setLang(lang) {
+    currentLang = lang;
+    const t = translations[lang];
+
+    document.getElementById('langRu').classList.toggle('active', lang === 'ru');
+    document.getElementById('langEn').classList.toggle('active', lang === 'en');
+
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      if (t[key] !== undefined) el.innerHTML = t[key];
+    });
+
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+      const key = el.getAttribute('data-i18n-placeholder');
+      if (t[key] !== undefined) el.placeholder = t[key];
+    });
+
+    document.documentElement.lang = lang;
+  }
+
   // Nav scroll
   window.addEventListener('scroll', () => {
     document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 60);
@@ -989,7 +1158,7 @@
     e.preventDefault();
     const btn = document.getElementById('submitBtn');
     btn.disabled = true;
-    btn.textContent = 'Отправка...';
+    btn.textContent = translations[currentLang].btn_sending;
 
     const data = {
       name: document.getElementById('name').value,
@@ -1010,11 +1179,11 @@
         btn.style.display = 'none';
         e.target.reset();
       } else {
-        btn.textContent = 'Ошибка — попробуй снова';
+        btn.textContent = translations[currentLang].btn_error;
         btn.disabled = false;
       }
     } catch {
-      btn.textContent = 'Ошибка — попробуй снова';
+      btn.textContent = translations[currentLang].btn_error;
       btn.disabled = false;
     }
   });
